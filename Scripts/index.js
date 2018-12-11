@@ -1,5 +1,5 @@
 'use strict';
-
+/* global $ */
 const API_KEY = 'AIzaSyBqDajaVDix0W6Yx-6Wg-dhH0zCWJc3_BA';
 
 /*
@@ -44,7 +44,7 @@ const fetchVideos = function(searchTerm, callback) {
     key: 'AIzaSyBqDajaVDix0W6Yx-6Wg-dhH0zCWJc3_BA',
     q: searchTerm,
   };
-$.getJSON(BASE_URL, data, callback);
+  $.getJSON(BASE_URL, data, callback);
 };
 
 
@@ -64,13 +64,13 @@ $.getJSON(BASE_URL, data, callback);
 // TEST IT! Grab an example API response and send it into the function - make sure
 // you get back the object you want.
 const decorateResponse = function(response) {
-return response.items.map(item => {
-  return {
-    id: item.id.videoId, 
-    title: item.snippet.title,
-    thumbnail: item.snippet.thumbnails.default
-  }
-})
+  return response.items.map(item => {
+    return {
+      id: item.id.videoId, 
+      title: item.snippet.title,
+      thumbnail: item.snippet.thumbnails.default
+    };
+  });
 };
 
 
@@ -84,12 +84,12 @@ return response.items.map(item => {
 // 1. Using the decorated object, return an HTML string containing all the expected
 // TEST IT!
 const generateVideoItemHtml = function(video) {
-return `
+  return `
 <li data-video-id=${video.id}>
 <a href= http://www.youtube.com/watch?v=${video.id} target=_blank><img src=${video.thumbnail.url}></a>
 ${video.title}
 </li>
-`
+`;
 };
 
 
@@ -102,7 +102,7 @@ ${video.title}
 // 1. Set the received array as the value held in store.videos
 // TEST IT!
 const addVideosToStore = function(videos) {
-store.videos = videos;
+  store.videos = videos;
 };
 
 
@@ -115,10 +115,10 @@ store.videos = videos;
 // 2. Add this array of DOM elements to the appropriate DOM element
 // TEST IT!
 const render = function() {
-const videoHtml = store.videos.map(video => {
-return generateVideoItemHtml(video);
-})
-$('.results').html(videoHtml);
+  const videoHtml = store.videos.map(video => {
+    return generateVideoItemHtml(video);
+  });
+  $('.results').html(videoHtml);
 };
 
 /**
@@ -138,16 +138,16 @@ $('.results').html(videoHtml);
 //   g) Inside the callback, run the `render` function 
 // TEST IT!
 const handleFormSubmit = function() {
-$('form').submit(function(event){
- event.preventDefault();
- const searchTerm = $('#search-term').val();
- fetchVideos(searchTerm, function(response){
-  const decoratedResponse = decorateResponse(response);
-  addVideosToStore(decoratedResponse);
-  render();
-  $('#search-term').val('');
-});
-})
+  $('form').submit(function(event){
+    event.preventDefault();
+    const searchTerm = $('#search-term').val();
+    fetchVideos(searchTerm, function(response){
+      const decoratedResponse = decorateResponse(response);
+      addVideosToStore(decoratedResponse);
+      render();
+      $('#search-term').val('');
+    });
+  });
 };
 
 // When DOM is ready:
