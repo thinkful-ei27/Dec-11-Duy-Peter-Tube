@@ -1,3 +1,5 @@
+'use strict';
+
 const API_KEY = 'AIzaSyBqDajaVDix0W6Yx-6Wg-dhH0zCWJc3_BA';
 
 /*
@@ -44,8 +46,8 @@ const fetchVideos = function(searchTerm, callback) {
   };
 $.getJSON(BASE_URL, data, callback);
 };
-const data = fetchVideos('dogs', res => Object.create(res));
-console.log(data);
+
+
 /**
  * @function decorateResponse
  * Uses Youtube API response to create an array of "decorated" video objects as 
@@ -63,17 +65,20 @@ console.log(data);
 // you get back the object you want.
 const decorateResponse = function(response) {
 return response.items.map(item => {
-  const itemVideo = {
+  return {
     id: item.id.videoId, 
     title: item.snippet.title,
     thumbnail: item.snippet.thumbnails.default
   }
-  fetchVideos('dogs', console.log(generateVideoItemHtml(itemVideo)));
 })
 };
 
-const decorateData = fetchVideos('dogs', decorateResponse);
-console.log(decorateData);
+fetchVideos('cats', function(response){
+  const decoratedResponse = decorateResponse(response);
+  addVideosToStore(decoratedResponse);
+  render();
+  console.log(store);
+});
 
 /**
  * @function generateVideoItemHtml
@@ -93,8 +98,7 @@ ${video.title}
 `
 };
 
-const videoHtml = generateVideoItemHtml(decorateData);
-console.log(videoHtml);
+
 /**
  * @function addVideosToStore
  * Store modification function to set decorated video objects
@@ -104,7 +108,7 @@ console.log(videoHtml);
 // 1. Set the received array as the value held in store.videos
 // TEST IT!
 const addVideosToStore = function(videos) {
-store.videos = videos
+store.videos = videos;
 };
 
 
@@ -117,7 +121,10 @@ store.videos = videos
 // 2. Add this array of DOM elements to the appropriate DOM element
 // TEST IT!
 const render = function() {
-
+const videoHtml = store.videos.map(video => {
+return generateVideoItemHtml(video);
+})
+$('.results').html(videoHtml);
 };
 
 /**
