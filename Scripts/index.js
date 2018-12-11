@@ -1,4 +1,4 @@
-const API_KEY = 'YOUR_KEY_HERE';
+const API_KEY = 'AIzaSyBqDajaVDix0W6Yx-6Wg-dhH0zCWJc3_BA';
 
 /*
   We want our store to hold an array of "decorated" video objects - i.e. objects that
@@ -19,7 +19,7 @@ const store = {
 
 // TASK: Add the Youtube Search API Base URL here:
 // Documentation is here: https://developers.google.com/youtube/v3/docs/search/list#usage
-const BASE_URL = '';
+const BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 /**
  * @function fetchVideos
@@ -35,10 +35,17 @@ const BASE_URL = '';
 //    as the last argument
 //
 // TEST IT! Execute this function and console log the results inside the callback.
+
 const fetchVideos = function(searchTerm, callback) {
-
+  const data = {
+    part: 'snippet',
+    key: 'AIzaSyBqDajaVDix0W6Yx-6Wg-dhH0zCWJc3_BA',
+    q: searchTerm,
+  };
+$.getJSON(BASE_URL, data, callback);
 };
-
+const data = fetchVideos('dogs', res => Object.create(res));
+console.log(data);
 /**
  * @function decorateResponse
  * Uses Youtube API response to create an array of "decorated" video objects as 
@@ -55,8 +62,18 @@ const fetchVideos = function(searchTerm, callback) {
 // TEST IT! Grab an example API response and send it into the function - make sure
 // you get back the object you want.
 const decorateResponse = function(response) {
-
+return response.items.map(item => {
+  const itemVideo = {
+    id: item.id.videoId, 
+    title: item.snippet.title,
+    thumbnail: item.snippet.thumbnails.default
+  }
+  fetchVideos('dogs', console.log(generateVideoItemHtml(itemVideo)));
+})
 };
+
+const decorateData = fetchVideos('dogs', decorateResponse);
+console.log(decorateData);
 
 /**
  * @function generateVideoItemHtml
@@ -68,9 +85,16 @@ const decorateResponse = function(response) {
 // 1. Using the decorated object, return an HTML string containing all the expected
 // TEST IT!
 const generateVideoItemHtml = function(video) {
-
+return `
+<li data-video-id=${video.id}>
+<img src=${video.thumbnail.url}>
+${video.title}
+</li>
+`
 };
 
+const videoHtml = generateVideoItemHtml(decorateData);
+console.log(videoHtml);
 /**
  * @function addVideosToStore
  * Store modification function to set decorated video objects
@@ -80,7 +104,7 @@ const generateVideoItemHtml = function(video) {
 // 1. Set the received array as the value held in store.videos
 // TEST IT!
 const addVideosToStore = function(videos) {
-
+store.videos = videos
 };
 
 
